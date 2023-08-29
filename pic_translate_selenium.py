@@ -16,8 +16,7 @@ class PicGoogleTranslateParser:
         os.makedirs('output')
 
     output = f'{Path.cwd()}/output'
-    for f in os.listdir(output):
-        os.remove(os.path.join(output, f))
+
 
     BASE_URL = 'https://translate.google.com/?hl=en&tab=TT&sl=auto&tl={tl}&op=images'
 
@@ -53,7 +52,6 @@ class PicGoogleTranslateParser:
     def placer_google_translate_parser(self):
         self.open_site()
         self.load_pic()
-        # self.download_translation()
         self.screenshot_translation()
 
     def open_site(self):
@@ -64,23 +62,20 @@ class PicGoogleTranslateParser:
         ).click()
 
     def load_pic(self):
-        pic_path = os.path.abspath(os.path.dirname(__file__)) + '/images/input.png'
+        pic_path = os.path.abspath(os.path.dirname(__file__)) + '/images/input.jpg'
         self._wait_and_choose_element('.r83qMb [class="D7BEKc"] input').send_keys(
             pic_path
         )
-        time.sleep(2)
-
-    # def download_translation(self):
-    #     self._wait_and_choose_element(
-    #         '//span[contains(text(),"Download translation")]',
-    #         by=By.XPATH,
-    #     ).click()
-    #     time.sleep(2)
+        time.sleep(10)
 
     def screenshot_translation(self):
         p = f'{Path.cwd()}/output'
-        preview = self._wait_and_choose_element('.dQBt [class="CMhTbb tyW0pd"] img')
-        preview.screenshot(str(Path(p, f'pic_translation.png')))
+        src = self._wait_and_choose_element('.dQBt [class="CMhTbb tyW0pd"] img').get_attribute('src')
+        self.driver.get(src)
+        time.sleep(4)
+        self._wait_and_choose_element(
+            'img'
+        ).screenshot(str(Path(p, f'pic_translation.png')))
 
     def _wait_and_choose_element(self, selector: str, by: By = By.CSS_SELECTOR, timeout: int = 10) -> WebElement:
         condition = EC.presence_of_element_located((by, selector))

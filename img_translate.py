@@ -6,7 +6,7 @@ from google.cloud import vision
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = 'img-translate-397007-286075ddcaa5.json'
 PROJECT_ID = 'img-translate-397007'
-file = 'input.png'
+file = 'input.jpg'
 target_language_code = 'ru'
 
 
@@ -112,10 +112,6 @@ def get_translated_text_on_pic(file, project_id, target_language_code):
 def save_txt(text):
     if not os.path.exists('output'):
         os.makedirs('output')
-
-    output = f'{Path.cwd()}/output'
-    for f in os.listdir(output):
-        os.remove(os.path.join(output, f))
 
     with open('output/output.txt', 'w') as file:
         file.write(text)
