@@ -117,6 +117,9 @@ def get_translated_text_on_pic(file, project_id, target_language_code):
         target_language_code=target_language_code,
         project_id=f'projects/{project_id}'
     )
+    # result_text = translate_text(
+    #     text_on_pic.get('text'), text_on_pic.get('language_code'), "ru",
+    # )
 
     return result_text
 
