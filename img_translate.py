@@ -43,11 +43,7 @@ def pic_to_text(infile: str) -> dict:
     paragraphs = response.full_text_annotation.pages[0].blocks[0].paragraphs[0]
     start_paragraphs = paragraphs.bounding_box.vertices[0]
 
-    # h = {
-    #     'q': text,
-    #     'key': 'AIzaSyD-MSMlgiJpT8xblytqk4WzFS5HqdI-AkA',
-    # }
-    # l = requests.get('https://translation.googleapis.com/language/translate/v2/detect', params=h, headers=h)
+
     if language_code == target_language_code:
         parts = text.split('\n')
         filtered_parts = []
