@@ -43,7 +43,6 @@ def pic_to_text(infile: str) -> dict:
     paragraphs = response.full_text_annotation.pages[0].blocks[0].paragraphs[0]
     start_paragraphs = paragraphs.bounding_box.vertices[0]
 
-
     if language_code == target_language_code:
         parts = text.split('\n')
         filtered_parts = []
@@ -118,9 +117,6 @@ def get_translated_text_on_pic(file, project_id, target_language_code):
         target_language_code=target_language_code,
         project_id=f'projects/{project_id}'
     )
-    # result_text = translate_text(
-    #     text_on_pic.get('text'), text_on_pic.get('language_code'), "ru",
-    # )
 
     return result_text
 
