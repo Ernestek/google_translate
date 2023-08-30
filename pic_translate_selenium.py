@@ -12,12 +12,10 @@ from selenium.webdriver.remote.webelement import WebElement
 
 
 class PicGoogleTranslateParser:
-    if not os.path.exists('output'):
-        os.makedirs('output')
-
-    output = f'{Path.cwd()}/output'
-
-
+    if not os.path.exists('Output'):
+        os.makedirs('Output')
+    output = f'{Path.cwd()}/Output'
+    tl = 'en'
     BASE_URL = 'https://translate.google.com/?hl=en&tab=TT&sl=auto&tl={tl}&op=images'
 
     def __init__(self):
@@ -47,35 +45,35 @@ class PicGoogleTranslateParser:
         })
         browser_options.add_experimental_option('useAutomationExtension', False)
 
-        self.driver = Chrome( service=service, options=browser_options,)
+        self.driver = Chrome(service=service, options=browser_options,)
 
-    def placer_google_translate_parser(self):
+    def placer_google_translate_parser(self, filename):
         self.open_site()
-        self.load_pic()
-        self.screenshot_translation()
+        self.load_pic(filename)
+        self.screenshot_translation(filename)
 
     def open_site(self):
-        self.driver.get(self.BASE_URL.format(tl='ru'))
+        self.driver.get(self.BASE_URL.format(tl=self.tl))
         self._wait_and_choose_element(
             '//span[contains(text(),"Images")]',
             by=By.XPATH,
         ).click()
 
-    def load_pic(self):
-        pic_path = os.path.abspath(os.path.dirname(__file__)) + '/images/input.jpg'
+    def load_pic(self, filename):
+        pic_path = os.path.abspath(os.path.dirname(__file__)) + f'/Input/{filename}'
         self._wait_and_choose_element('.r83qMb [class="D7BEKc"] input').send_keys(
             pic_path
         )
         time.sleep(10)
 
-    def screenshot_translation(self):
-        p = f'{Path.cwd()}/output'
+    def screenshot_translation(self, filename):
+        filename = filename.split('.')
         src = self._wait_and_choose_element('.dQBt [class="CMhTbb tyW0pd"] img').get_attribute('src')
         self.driver.get(src)
-        time.sleep(4)
+        time.sleep(2)
         self._wait_and_choose_element(
             'img'
-        ).screenshot(str(Path(p, f'pic_translation.png')))
+        ).screenshot(str(Path(self.output, f'{filename[0]}-{self.tl.capitalize()}.{filename[-1]}')))
 
     def _wait_and_choose_element(self, selector: str, by: By = By.CSS_SELECTOR, timeout: int = 10) -> WebElement:
         condition = EC.presence_of_element_located((by, selector))
@@ -90,5 +88,16 @@ class PicGoogleTranslateParser:
 
 
 if __name__ == '__main__':
-    with PicGoogleTranslateParser() as placer:
-        placer.placer_google_translate_parser()
+    folder_path = 'Input'
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+        if os.path.isfile(file_path):
+            filename_format = filename.split('.')[1]
+            if filename_format in ('png', 'jpg', 'jpeg'):
+                print(filename)
+                with PicGoogleTranslateParser() as placer:
+                    placer.placer_google_translate_parser(filename)
+
+            else:
+                print('Not supported format file')
+

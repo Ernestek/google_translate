@@ -1,13 +1,15 @@
 import os
-from pathlib import Path
 
+import langdetect
+import requests
 from google.cloud import translate_v3beta1 as translate
 from google.cloud import vision
+from langdetect import detect, LangDetectException
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = 'img-translate-397007-286075ddcaa5.json'
 PROJECT_ID = 'img-translate-397007'
 file = 'input.jpg'
-target_language_code = 'ru'
+target_language_code = 'en'
 
 
 def pic_to_text(infile: str) -> dict:
@@ -40,6 +42,23 @@ def pic_to_text(infile: str) -> dict:
 
     paragraphs = response.full_text_annotation.pages[0].blocks[0].paragraphs[0]
     start_paragraphs = paragraphs.bounding_box.vertices[0]
+
+    # h = {
+    #     'q': text,
+    #     'key': 'AIzaSyD-MSMlgiJpT8xblytqk4WzFS5HqdI-AkA',
+    # }
+    # l = requests.get('https://translation.googleapis.com/language/translate/v2/detect', params=h, headers=h)
+    if language_code == target_language_code:
+        parts = text.split('\n')
+        filtered_parts = []
+
+        for part in parts:
+            try:
+                if part and detect(part) != 'en':
+                    filtered_parts.append(detect(part))
+            except LangDetectException:
+                continue
+        language_code = max(filtered_parts, key=filtered_parts.count)
 
     return {'text': text, 'font_size': font_size, 'language_code': language_code, 'start_paragraphs': start_paragraphs}
 
@@ -92,10 +111,11 @@ def get_translated_text_on_pic(file, project_id, target_language_code):
     None
     """
     # Photo from which to extract text
-    infile = f'images/{file}'
+    infile = f'Input/{file}'
 
     # photo -> detected text
     text_on_pic = pic_to_text(infile)
+
     # detected text -> translated text
     result_text = translate_text(
         ' '.join(text_on_pic.get('text').split('\n')), text_on_pic.get('language_code'),
@@ -109,18 +129,25 @@ def get_translated_text_on_pic(file, project_id, target_language_code):
     return result_text
 
 
-def save_txt(text):
-    if not os.path.exists('output'):
-        os.makedirs('output')
-
-    with open('output/output.txt', 'w') as file:
+def save_txt(filename, text):
+    if not os.path.exists('Output'):
+        os.makedirs('Output')
+    filename = filename.split('.')
+    with open(f'Output/{filename[0]}.txt', 'w') as file:
         file.write(text)
 
 
 if __name__ == '__main__':
-    print(get_translated_text_on_pic(file=file,
-                                     project_id=PROJECT_ID,
-                                     target_language_code=target_language_code))
-    save_txt(get_translated_text_on_pic(file=file,
-                                        project_id=PROJECT_ID,
-                                        target_language_code=target_language_code))
+    folder_path = 'Input'
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+        if os.path.isfile(file_path):
+            filename_format = filename.split('.')[1]
+            if filename_format in ('png', 'jpg', 'jpeg'):
+                save_txt(filename,
+                         get_translated_text_on_pic(file=filename,
+                                                    project_id=PROJECT_ID,
+                                                    target_language_code=target_language_code))
+
+            else:
+                print('Not supported format file')
