@@ -1,4 +1,6 @@
 import os
+import tkinter as tk
+from tkinter import filedialog
 
 from img_translate import save_txt, get_translated_text_on_pic
 from pic_translate_selenium import PicGoogleTranslateParser
@@ -28,21 +30,12 @@ def main(folder_path):
     return 'Translated'
 
 
-
-import tkinter as tk
-from tkinter import filedialog
-
-# from main import main
-
-
 def start_processing():
     source_path = source_entry.get()
     destination_path = destination_entry.get()
 
     # Здесь можно добавить код для обработки файлов из source_path и сохранения в destination_path
-    print(source_path)
     response = main(source_path)
-    # print(destination_path)
     # Например, можно скопировать файлы из source_path в destination_path
 
     result_label.config(text=response)
@@ -50,7 +43,6 @@ def start_processing():
 
 def browse_source_path():
     path = filedialog.askdirectory()
-    # path = filedialog.askdirectory(initialdir=os.path.expanduser("~"))
     source_entry.delete(0, tk.END)
     source_entry.insert(0, path)
 
