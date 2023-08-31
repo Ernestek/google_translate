@@ -128,7 +128,7 @@ def save_txt(filename, text):
     if not os.path.exists('Output'):
         os.makedirs('Output')
     filename = filename.split('.')
-    with open(f'Output/{filename[0]}.txt', 'w') as file:
+    with open(f'Output/{filename[0]}-EN.txt', 'w') as file:
         file.write(text)
 
 

@@ -73,7 +73,7 @@ class PicGoogleTranslateParser:
         time.sleep(2)
         self._wait_and_choose_element(
             'img'
-        ).screenshot(str(Path(self.output, f'{filename[0]}-{self.tl.capitalize()}.{filename[-1]}')))
+        ).screenshot(str(Path(self.output, f'{filename[0]}-{self.tl.upper()}.{filename[-1]}')))
 
     def _wait_and_choose_element(self, selector: str, by: By = By.CSS_SELECTOR, timeout: int = 10) -> WebElement:
         condition = EC.presence_of_element_located((by, selector))
