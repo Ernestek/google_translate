@@ -1,18 +1,15 @@
 import os
 
-import langdetect
-import requests
 from google.cloud import translate_v3beta1 as translate
 from google.cloud import vision
 from langdetect import detect, LangDetectException
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = 'img-translate-397007-286075ddcaa5.json'
-PROJECT_ID = 'img-translate-397007'
-file = 'input.jpg'
-target_language_code = 'en'
+
+# file = 'input.jpg'
+# target_language_code = 'en'
 
 
-def pic_to_text(infile: str) -> dict:
+def pic_to_text(infile: str, target_language_code) -> dict:
     """Detects text in an image file
 
     Args:
@@ -21,7 +18,8 @@ def pic_to_text(infile: str) -> dict:
     Returns:
     dict withe all needed info (text, font_size, language_code, start_paragraphs)
     """
-
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = 'img-translate-397007-286075ddcaa5.json'
+    PROJECT_ID = 'img-translate-397007'
     # Instantiates a client
     client = vision.ImageAnnotatorClient()
 
@@ -109,7 +107,7 @@ def get_translated_text_on_pic(file, project_id, target_language_code):
     infile = f'Input/{file}'
 
     # photo -> detected text
-    text_on_pic = pic_to_text(infile)
+    text_on_pic = pic_to_text(infile, target_language_code)
 
     # detected text -> translated text
     result_text = translate_text(

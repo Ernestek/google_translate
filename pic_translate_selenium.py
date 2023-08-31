@@ -1,5 +1,4 @@
 import os
-import time
 from pathlib import Path
 
 from webdriver_manager.chrome import ChromeDriverManager
@@ -12,8 +11,8 @@ from selenium.webdriver.remote.webelement import WebElement
 
 
 class PicGoogleTranslateParser:
-    if not os.path.exists('Output'):
-        os.makedirs('Output')
+    # if not os.path.exists('Output'):
+    #     os.makedirs('Output')
     output = f'{Path.cwd()}/Output'
     tl = 'en'
     BASE_URL = 'https://translate.google.com/?hl=en&tab=TT&sl=auto&tl={tl}&op=images'
@@ -46,6 +45,7 @@ class PicGoogleTranslateParser:
         browser_options.add_experimental_option('useAutomationExtension', False)
 
         self.driver = Chrome(service=service, options=browser_options,)
+        # self.driver = Chrome(options=browser_options,)
 
     def placer_google_translate_parser(self, filename):
         self.open_site()
@@ -64,18 +64,18 @@ class PicGoogleTranslateParser:
         self._wait_and_choose_element('.r83qMb [class="D7BEKc"] input').send_keys(
             pic_path
         )
-        time.sleep(10)
+        # time.sleep(10)
 
     def screenshot_translation(self, filename):
         filename = filename.split('.')
         src = self._wait_and_choose_element('.dQBt [class="CMhTbb tyW0pd"] img').get_attribute('src')
         self.driver.get(src)
-        time.sleep(2)
+        # time.sleep(2)
         self._wait_and_choose_element(
             'img'
         ).screenshot(str(Path(self.output, f'{filename[0]}-{self.tl.upper()}.{filename[-1]}')))
 
-    def _wait_and_choose_element(self, selector: str, by: By = By.CSS_SELECTOR, timeout: int = 10) -> WebElement:
+    def _wait_and_choose_element(self, selector: str, by: By = By.CSS_SELECTOR, timeout: int = 20) -> WebElement:
         condition = EC.presence_of_element_located((by, selector))
         element = WebDriverWait(self.driver, timeout).until(condition)
         return element
