@@ -122,15 +122,13 @@ def get_translated_text_on_pic(file, project_id, target_language_code):
 
 
 def save_txt(filename, destination_path, text):
-    # if not os.path.exists('Output'):
-    #     os.makedirs('Output')
     filename = filename.split('.')
     with open(f'{destination_path}/{filename[0]}-EN.txt', 'w') as file:
         file.write(text)
 
 
 if __name__ == '__main__':
-    destination_path = ''
+    destination_path = 'Output'
     PROJECT_ID = 'img-translate-397007'
     target_language_code = 'en'
     folder_path = 'Input'
