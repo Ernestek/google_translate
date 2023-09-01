@@ -19,7 +19,6 @@ def pic_to_text(infile: str, target_language_code) -> dict:
     dict withe all needed info (text, font_size, language_code, start_paragraphs)
     """
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = 'img-translate-397007-286075ddcaa5.json'
-    PROJECT_ID = 'img-translate-397007'
     # Instantiates a client
     client = vision.ImageAnnotatorClient()
 
@@ -104,7 +103,7 @@ def get_translated_text_on_pic(file, project_id, target_language_code):
     None
     """
     # Photo from which to extract text
-    infile = f'Input/{file}'
+    infile = file
 
     # photo -> detected text
     text_on_pic = pic_to_text(infile, target_language_code)
@@ -122,15 +121,18 @@ def get_translated_text_on_pic(file, project_id, target_language_code):
     return result_text
 
 
-def save_txt(filename, text):
-    if not os.path.exists('Output'):
-        os.makedirs('Output')
+def save_txt(filename, destination_path, text):
+    # if not os.path.exists('Output'):
+    #     os.makedirs('Output')
     filename = filename.split('.')
-    with open(f'Output/{filename[0]}-EN.txt', 'w') as file:
+    with open(f'{destination_path}/{filename[0]}-EN.txt', 'w') as file:
         file.write(text)
 
 
 if __name__ == '__main__':
+    destination_path = ''
+    PROJECT_ID = 'img-translate-397007'
+    target_language_code = 'en'
     folder_path = 'Input'
     for filename in os.listdir(folder_path):
         file_path = os.path.join(folder_path, filename)
@@ -138,6 +140,7 @@ if __name__ == '__main__':
             filename_format = filename.split('.')[1]
             if filename_format in ('png', 'jpg', 'jpeg'):
                 save_txt(filename,
+                         destination_path,
                          get_translated_text_on_pic(file=filename,
                                                     project_id=PROJECT_ID,
                                                     target_language_code=target_language_code))

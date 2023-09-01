@@ -7,27 +7,31 @@ from pic_translate_selenium import PicGoogleTranslateParser
 
 PROJECT_ID = 'img-translate-397007'
 
-def main(folder_path):
+
+def main(folder_path, destination_path):
     target_language_code = 'en'
-    for filename in os.listdir(folder_path):
-        file_path = os.path.join(folder_path, filename)
-        if os.path.isfile(file_path):
-            filename_format = filename.split('.')[1]
-            if filename_format in ('png', 'jpg', 'jpeg'):
-                # Start translate picture to txt
-                save_txt(filename,
-                         get_translated_text_on_pic(
-                             file=filename,
-                             project_id=PROJECT_ID,
-                             target_language_code=target_language_code,
-                         ))
-                # Start translate picture to picture
-                with PicGoogleTranslateParser() as placer:
+    with PicGoogleTranslateParser(destination_path) as placer:
+
+        for filename in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, filename)
+            if os.path.isfile(file_path):
+                filename_format = filename.split('.')[1]
+                if filename_format in ('png', 'jpg', 'jpeg'):
+                    # Start translate picture to txt
+                    save_txt(filename,
+                             destination_path,
+                             get_translated_text_on_pic(
+                                 file=file_path,
+                                 project_id=PROJECT_ID,
+                                 target_language_code=target_language_code,
+                             ))
+                    # Start translate picture to picture
                     placer.placer_google_translate_parser(filename)
 
-            else:
-                return 'Not supported format file'
-    return 'Translated'
+                else:
+                    print('Not supported format file')
+                    continue
+        return 'Translated'
 
 
 def start_processing():
@@ -35,7 +39,7 @@ def start_processing():
     destination_path = destination_entry.get()
 
     # Здесь можно добавить код для обработки файлов из source_path и сохранения в destination_path
-    response = main(source_path)
+    response = main(source_path, destination_path)
     # Например, можно скопировать файлы из source_path в destination_path
 
     result_label.config(text=response)

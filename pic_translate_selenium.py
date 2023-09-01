@@ -1,8 +1,11 @@
 import os
+import shutil
+import time
 from pathlib import Path
 
+import requests
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver import Chrome, ChromeOptions
+from selenium.webdriver import Chrome, ChromeOptions, ActionChains, Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -17,7 +20,8 @@ class PicGoogleTranslateParser:
     tl = 'en'
     BASE_URL = 'https://translate.google.com/?hl=en&tab=TT&sl=auto&tl={tl}&op=images'
 
-    def __init__(self):
+    def __init__(self, destination_path):
+        self.destination_path = destination_path
         service = Service(ChromeDriverManager().install())
         browser_options = ChromeOptions()
         service_args = [
@@ -44,13 +48,21 @@ class PicGoogleTranslateParser:
         })
         browser_options.add_experimental_option('useAutomationExtension', False)
 
-        self.driver = Chrome(service=service, options=browser_options,)
+        prefs = {"profile.default_content_settings.popups": 0,
+                 "download.default_directory": os.getcwd() + '/temporary',
+                 "directory_upgrade": True}
+        browser_options.add_experimental_option('prefs', prefs)
+
+        self.driver = Chrome(service=service, options=browser_options, )
         # self.driver = Chrome(options=browser_options,)
 
     def placer_google_translate_parser(self, filename):
         self.open_site()
         self.load_pic(filename)
-        self.screenshot_translation(filename)
+        # self.download_pic(filename, self.destination_path)
+        # self.screenshot_translation(filename, destination_path)
+        self._wait_and_choose_element('//span[contains(text(), "Download translation")]', by=By.XPATH).click()
+        self.download_pic(filename)
 
     def open_site(self):
         self.driver.get(self.BASE_URL.format(tl=self.tl))
@@ -66,14 +78,38 @@ class PicGoogleTranslateParser:
         )
         # time.sleep(10)
 
-    def screenshot_translation(self, filename):
+    def download_pic(self, filename):
+        time.sleep(2)
+        # Путь к папке, где находится файл
+        source_path = os.getcwd() + '/temporary'
+        # Имя файла, который вы хотите переименовать и переместить
+        old_filename = filename  # Замените на реальное имя файла
+        old = old_filename.split('.')
+        # Новое имя файла
+        new_filename = f'{old[0]}-EN.{old[1]}'  # Замените на новое имя файла
+        # Полные пути к исходному файлу и файлу в целевой папке
+        old_path = os.path.join(source_path, old_filename)
+        new_path = os.path.join(source_path, new_filename)
+        # Переименование файла
+        while True:
+            try:
+                os.rename(old_path, new_path)
+                break
+            except FileNotFoundError:
+                continue
+        if os.path.exists(os.path.join(self.destination_path, new_filename)):
+            os.remove(os.path.join(self.destination_path, new_filename))
+
+        shutil.move(new_path,  self.destination_path)
+
+    def screenshot_translation(self, filename, destination_path):
         filename = filename.split('.')
         src = self._wait_and_choose_element('.dQBt [class="CMhTbb tyW0pd"] img').get_attribute('src')
         self.driver.get(src)
         # time.sleep(2)
         self._wait_and_choose_element(
             'img'
-        ).screenshot(str(Path(self.output, f'{filename[0]}-{self.tl.upper()}.{filename[-1]}')))
+        ).screenshot(str(Path(destination_path, f'{filename[0]}-{self.tl.upper()}.{filename[-1]}')))
 
     def _wait_and_choose_element(self, selector: str, by: By = By.CSS_SELECTOR, timeout: int = 20) -> WebElement:
         condition = EC.presence_of_element_located((by, selector))
@@ -89,15 +125,14 @@ class PicGoogleTranslateParser:
 
 if __name__ == '__main__':
     folder_path = 'Input'
+    destination_path = ''
     for filename in os.listdir(folder_path):
         file_path = os.path.join(folder_path, filename)
         if os.path.isfile(file_path):
             filename_format = filename.split('.')[1]
             if filename_format in ('png', 'jpg', 'jpeg'):
                 print(filename)
-                with PicGoogleTranslateParser() as placer:
+                with PicGoogleTranslateParser(destination_path) as placer:
                     placer.placer_google_translate_parser(filename)
-
             else:
                 print('Not supported format file')
-
