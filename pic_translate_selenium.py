@@ -20,8 +20,8 @@ class PicGoogleTranslateParser:
     tl = 'en'
     BASE_URL = 'https://translate.google.com/?hl=en&tab=TT&sl=auto&tl={tl}&op=images'
 
-    def __init__(self, destination_path):
-        self.destination_path = destination_path
+    def __init__(self):
+        # self.destination_path = destination_path
         service = Service(ChromeDriverManager().install())
         browser_options = ChromeOptions()
         service_args = [
@@ -72,9 +72,9 @@ class PicGoogleTranslateParser:
         ).click()
 
     def load_pic(self, filename):
-        pic_path = os.path.abspath(os.path.dirname(__file__)) + f'/Input/{filename}'
+        # pic_path = os.path.abspath(os.path.dirname(__file__)) + f'/Input/{filename}'
         self._wait_and_choose_element('.r83qMb [class="D7BEKc"] input').send_keys(
-            pic_path
+            filename
         )
         # time.sleep(10)
 
@@ -88,19 +88,20 @@ class PicGoogleTranslateParser:
         # Новое имя файла
         new_filename = f'{old[0]}-EN.{old[1]}'  # Замените на новое имя файла
         # Полные пути к исходному файлу и файлу в целевой папке
-        old_path = os.path.join(source_path, old_filename)
+        # old_path = os.path.join(source_path, old_filename)
+        print(source_path+old_filename.split('/')[-1], new_filename)
         new_path = os.path.join(source_path, new_filename)
         # Переименование файла
         while True:
             try:
-                os.rename(old_path, new_path)
+                os.rename(source_path + '/' + old_filename.split('/')[-1], new_filename)
                 break
             except FileNotFoundError:
                 continue
-        if os.path.exists(os.path.join(self.destination_path, new_filename)):
-            os.remove(os.path.join(self.destination_path, new_filename))
-
-        shutil.move(new_path,  self.destination_path)
+        # if os.path.exists(os.path.join(self.destination_path, new_filename)):
+        #     os.remove(os.path.join(self.destination_path, new_filename))
+        #
+        # shutil.move(new_path,  self.destination_path)
 
     def screenshot_translation(self, filename, destination_path):
         filename = filename.split('.')
@@ -124,15 +125,15 @@ class PicGoogleTranslateParser:
 
 
 if __name__ == '__main__':
-    folder_path = 'Input'
+    folder_path = '/home/ernest/work/google_translate/Input/input.jpg'
     destination_path = 'Output'
-    for filename in os.listdir(folder_path):
-        file_path = os.path.join(folder_path, filename)
-        if os.path.isfile(file_path):
-            filename_format = filename.split('.')[1]
-            if filename_format in ('png', 'jpg', 'jpeg'):
-                print(filename)
-                with PicGoogleTranslateParser(destination_path) as placer:
-                    placer.placer_google_translate_parser(filename)
-            else:
-                print('Not supported format file')
+    # file_path = os.path.join(folder_path, filename)
+    print(os.path.isfile(folder_path))
+    if os.path.isfile(folder_path):
+        filename_format = folder_path.split('.')[1]
+        if filename_format in ('png', 'jpg', 'jpeg'):
+            print(folder_path)
+            with PicGoogleTranslateParser() as placer:
+                placer.placer_google_translate_parser(folder_path)
+        else:
+            print('Not supported format file')

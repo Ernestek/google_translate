@@ -121,9 +121,9 @@ def get_translated_text_on_pic(file, project_id, target_language_code):
     return result_text
 
 
-def save_txt(filename, destination_path, text):
+def save_txt(filename, text):
     filename = filename.split('.')
-    with open(f'{destination_path}/{filename[0]}-EN.txt', 'w') as file:
+    with open(f'{filename[0]}-EN.txt', 'w') as file:
         file.write(text)
 
 
@@ -138,7 +138,7 @@ if __name__ == '__main__':
             filename_format = filename.split('.')[1]
             if filename_format in ('png', 'jpg', 'jpeg'):
                 save_txt(filename,
-                         destination_path,
+                         # destination_path,
                          get_translated_text_on_pic(file=filename,
                                                     project_id=PROJECT_ID,
                                                     target_language_code=target_language_code))
