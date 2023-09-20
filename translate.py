@@ -1,8 +1,8 @@
 import os
 import sys
 
-from img_translate import save_txt, get_translated_text_on_pic
-from pic_translate_selenium import PicGoogleTranslateParser
+from modules.img_translate import save_txt, get_translated_text_on_pic
+from temporary.pic_translate_selenium import PicGoogleTranslateParser
 PROJECT_ID = 'img-translate-397007'
 
 

@@ -25,7 +25,7 @@ class PicGoogleTranslateParser:
         service = Service(ChromeDriverManager().install())
         browser_options = ChromeOptions()
         service_args = [
-            # '--headless=True'
+            '--headless=True'
             '--start-maximized',
             '--no-sandbox',
             '--disable-web-security',
@@ -89,7 +89,7 @@ class PicGoogleTranslateParser:
         new_filename = f'{old[0]}-EN.{old[1]}'  # Замените на новое имя файла
         # Полные пути к исходному файлу и файлу в целевой папке
         # old_path = os.path.join(source_path, old_filename)
-        print(source_path+old_filename.split('/')[-1], new_filename)
+        print(new_filename)
         new_path = os.path.join(source_path, new_filename)
         # Переименование файла
         while True:
@@ -125,8 +125,8 @@ class PicGoogleTranslateParser:
 
 
 if __name__ == '__main__':
-    folder_path = '/home/ernest/work/google_translate/Input/input.jpg'
-    destination_path = 'Output'
+    folder_path = '/Input/input.jpg'
+    destination_path = '../Output'
     # file_path = os.path.join(folder_path, filename)
     print(os.path.isfile(folder_path))
     if os.path.isfile(folder_path):

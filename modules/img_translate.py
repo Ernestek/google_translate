@@ -128,10 +128,10 @@ def save_txt(filename, text):
 
 
 if __name__ == '__main__':
-    destination_path = 'Output'
+    destination_path = '../Output'
     PROJECT_ID = 'img-translate-397007'
     target_language_code = 'en'
-    folder_path = 'Input'
+    folder_path = '../Input'
     for filename in os.listdir(folder_path):
         file_path = os.path.join(folder_path, filename)
         if os.path.isfile(file_path):
