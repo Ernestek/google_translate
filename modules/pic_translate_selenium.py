@@ -14,6 +14,8 @@ GCLOUD_PROJECT = '286075ddcaa5dde679a5fc91005e088f1605ff35'
 
 
 class PicGoogleTranslateParser:
+    if not os.path.exists('temporary'):
+        os.makedirs('temporary')
     shutil.rmtree(os.path.join(os.getcwd(), 'temporary'))
     tl = 'en'
     BASE_URL = 'https://translate.google.com/?hl=en&tab=TT&sl=auto&tl={tl}&op=images'
