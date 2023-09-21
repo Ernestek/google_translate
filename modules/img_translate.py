@@ -89,7 +89,6 @@ def translate_text(
             "target_language_code": target_language_code,
         }
     )
-
     return result.translations[0].translated_text
 
 
@@ -97,7 +96,6 @@ def get_translated_text_on_pic(file, project_id, target_language_code):
     """This method is called when the tutorial is run in the Google Cloud
     Translation API. It creates a glossary, translates text to
     French, and speaks the translated text.
-
 
     Returns:
     str
@@ -114,16 +112,12 @@ def get_translated_text_on_pic(file, project_id, target_language_code):
         target_language_code=target_language_code,
         project_id=f'projects/{project_id}'
     )
-    # result_text = translate_text(
-    #     text_on_pic.get('text'), text_on_pic.get('language_code'), "ru",
-    # )
-
     return result_text
 
 
 def save_txt(filename, text):
     filename = filename.split('.')
-    with open(f'{filename[0]}-EN.txt', 'w') as file:
+    with open(f'{filename[0]}-EN.txt', 'w', encoding='utf-8') as file:
         file.write(text)
 
 
