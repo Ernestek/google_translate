@@ -8,6 +8,8 @@ from langdetect import detect, LangDetectException
 # file = 'input.jpg'
 # target_language_code = 'en'
 
+GCLOUD_PROJECT = '286075ddcaa5dde679a5fc91005e088f1605ff35'
+
 
 def pic_to_text(infile: str, target_language_code) -> dict:
     """Detects text in an image file
@@ -96,11 +98,9 @@ def get_translated_text_on_pic(file, project_id, target_language_code):
     Translation API. It creates a glossary, translates text to
     French, and speaks the translated text.
 
-    Args:
-    None
 
     Returns:
-    None
+    str
     """
     # Photo from which to extract text
     infile = file

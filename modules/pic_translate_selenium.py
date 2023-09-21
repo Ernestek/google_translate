@@ -12,11 +12,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
+GCLOUD_PROJECT = '286075ddcaa5dde679a5fc91005e088f1605ff35'
+
 
 class PicGoogleTranslateParser:
     # if not os.path.exists('Output'):
     #     os.makedirs('Output')
-    output = f'{Path.cwd()}/Output'
+    # output = f'{Path.cwd()}/Output'
     tl = 'en'
     BASE_URL = 'https://translate.google.com/?hl=en&tab=TT&sl=auto&tl={tl}&op=images'
 
@@ -25,7 +27,7 @@ class PicGoogleTranslateParser:
         service = Service(ChromeDriverManager().install())
         browser_options = ChromeOptions()
         service_args = [
-            '--headless=True'
+            # '--headless=new'
             '--start-maximized',
             '--no-sandbox',
             '--disable-web-security',
@@ -46,10 +48,13 @@ class PicGoogleTranslateParser:
             'profile.default_content_setting_values.notifications': 2,
             'profile.default_content_settings.popups': 0
         })
+        browser_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        browser_options.add_experimental_option('excludeSwitches', ['enable-logging'])
         browser_options.add_experimental_option('useAutomationExtension', False)
+        browser_options.add_argument('--disable-blink-features=AutomationControlled')
 
         prefs = {"profile.default_content_settings.popups": 0,
-                 "download.default_directory": os.getcwd() + '/temporary',
+                 "download.default_directory": os.path.join(os.getcwd(), 'temporary'),
                  "directory_upgrade": True}
         browser_options.add_experimental_option('prefs', prefs)
 
@@ -91,10 +96,11 @@ class PicGoogleTranslateParser:
         # old_path = os.path.join(source_path, old_filename)
         print(new_filename)
         new_path = os.path.join(source_path, new_filename)
+        print(os.path.join(source_path, os.path.basename(old_filename)))
         # Переименование файла
         while True:
             try:
-                os.rename(source_path + '/' + old_filename.split('/')[-1], new_filename)
+                os.rename(os.path.join(source_path, os.path.basename(old_filename)), new_filename)
                 break
             except FileNotFoundError:
                 continue
@@ -103,14 +109,14 @@ class PicGoogleTranslateParser:
         #
         # shutil.move(new_path,  self.destination_path)
 
-    def screenshot_translation(self, filename, destination_path):
-        filename = filename.split('.')
-        src = self._wait_and_choose_element('.dQBt [class="CMhTbb tyW0pd"] img').get_attribute('src')
-        self.driver.get(src)
-        # time.sleep(2)
-        self._wait_and_choose_element(
-            'img'
-        ).screenshot(str(Path(destination_path, f'{filename[0]}-{self.tl.upper()}.{filename[-1]}')))
+    # def screenshot_translation(self, filename, destination_path):
+    #     filename = filename.split('.')
+    #     src = self._wait_and_choose_element('.dQBt [class="CMhTbb tyW0pd"] img').get_attribute('src')
+    #     self.driver.get(src)
+    #     # time.sleep(2)
+    #     self._wait_and_choose_element(
+    #         'img'
+    #     ).screenshot(str(Path(destination_path, f'{filename[0]}-{self.tl.upper()}.{filename[-1]}')))
 
     def _wait_and_choose_element(self, selector: str, by: By = By.CSS_SELECTOR, timeout: int = 20) -> WebElement:
         condition = EC.presence_of_element_located((by, selector))
