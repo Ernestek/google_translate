@@ -1,15 +1,12 @@
 GETTING STARTED
 Create venv:
 
-cd project/
+cd <project_path>
 python -m venv venv
 Linux:
 source venv/bin/activate
 Windows:
 venv\Scripts\activate
-
-Upgrade pip:
-pip install --upgrade pip
 
 Install requirements.txt:
 pip install -r requirements.txt
