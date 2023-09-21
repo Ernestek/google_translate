@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from google.cloud import translate_v3beta1 as translate
 from google.cloud import vision
@@ -116,8 +117,14 @@ def get_translated_text_on_pic(file, project_id, target_language_code):
 
 
 def save_txt(filename, text):
-    filename = filename.split('.')
-    with open(f'{filename[0]}-EN.txt', 'w', encoding='utf-8') as file:
+    path = Path(filename)
+    file = path.name.split('.')
+
+    # filename = filename.split('.')
+    full_path = os.path.join(path.parent, file[0] + '-EN.txt')
+    print(full_path)
+    # with open(f'{".".join(filename[:-1])}-EN.txt', 'w', encoding='utf-8') as file:
+    with open(os.path.join(path.parent, file[0] + '-EN.txt'), 'w', encoding='utf-8') as file:
         file.write(text)
 
 
@@ -125,7 +132,7 @@ if __name__ == '__main__':
     destination_path = '../Output'
     PROJECT_ID = 'img-translate-397007'
     target_language_code = 'en'
-    folder_path = '../Input'
+    folder_path = '../Input.V2'
     for filename in os.listdir(folder_path):
         file_path = os.path.join(folder_path, filename)
         if os.path.isfile(file_path):

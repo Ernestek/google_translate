@@ -1,6 +1,7 @@
 import os
 import shutil
 import time
+from pathlib import Path
 
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver import Chrome, ChromeOptions
@@ -9,8 +10,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-
-GCLOUD_PROJECT = '286075ddcaa5dde679a5fc91005e088f1605ff35'
 
 
 class PicGoogleTranslateParser:
@@ -81,23 +80,19 @@ class PicGoogleTranslateParser:
         source_path = os.path.join(os.getcwd(), 'temporary')
         # Имя файла, который вы хотите переименовать и переместить
         old_filename = filename  # Замените на реальное имя файла
-        old = old_filename.split('.')
+        path = Path(filename)
+        old = path.name.split('.')
         # Новое имя файла
         new_filename = f'{old[0]}-EN.{old[1]}'  # Замените на новое имя файла
-        print(new_filename)
-        print(os.path.join(source_path, os.path.basename(old_filename)))
+        print(os.path.join(path.parent, new_filename))
         # Переименование файла
         while True:
             try:
-                os.rename(os.path.join(source_path, os.path.basename(old_filename)), new_filename)
+                os.rename(os.path.join(source_path, os.path.basename(old_filename)), os.path.join(path.parent, new_filename))
                 break
             except FileNotFoundError:
                 continue
 
-        # if os.path.exists(os.path.join(self.destination_path, new_filename)):
-        #     os.remove(os.path.join(self.destination_path, new_filename))
-        #
-        # shutil.move(new_path,  self.destination_path)
 
     def _wait_and_choose_element(self, selector: str, by: By = By.CSS_SELECTOR, timeout: int = 20) -> WebElement:
         condition = EC.presence_of_element_located((by, selector))
@@ -114,12 +109,10 @@ class PicGoogleTranslateParser:
 if __name__ == '__main__':
     folder_path = '/Input/input.jpg'
     destination_path = '../Output'
-    # file_path = os.path.join(folder_path, filename)
     print(os.path.isfile(folder_path))
     if os.path.isfile(folder_path):
         filename_format = folder_path.split('.')[1]
         if filename_format in ('png', 'jpg', 'jpeg'):
-            print(folder_path)
             with PicGoogleTranslateParser() as placer:
                 placer.placer_google_translate_parser(folder_path)
         else:
