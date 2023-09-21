@@ -13,7 +13,7 @@ def main(folder_path):
         # file_path = os.path.join(folder_path, filename)
         filename = folder_path
         if os.path.isfile(filename):
-            filename_format = filename.split('.')[1]
+            filename_format = filename.split('.')[-1]
             if filename_format in ('png', 'jpg', 'jpeg'):
                 # Start translate picture to txt
                 save_txt(filename,
