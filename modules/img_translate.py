@@ -120,10 +120,8 @@ def save_txt(filename, text):
     path = Path(filename)
     file = path.name.split('.')
 
-    # filename = filename.split('.')
     full_path = os.path.join(path.parent, file[0] + '-EN.txt')
     print(full_path)
-    # with open(f'{".".join(filename[:-1])}-EN.txt', 'w', encoding='utf-8') as file:
     with open(os.path.join(path.parent, file[0] + '-EN.txt'), 'w', encoding='utf-8') as file:
         file.write(text)
 
