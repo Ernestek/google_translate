@@ -33,7 +33,7 @@ class PicGoogleTranslateParser:
             '--profile-directory=Default',
             '--ignore-ssl-errors=true',
             '--disable-dev-shm-usage',
-            '--headless=new',
+            # '--headless=new',
         ]
         for arg in service_args:
             browser_options.add_argument(arg)
@@ -64,15 +64,12 @@ class PicGoogleTranslateParser:
 
     def open_site(self):
         self.driver.get(self.BASE_URL.format(tl=self.tl))
-        self._wait_and_choose_element(
-            '//span[contains(text(),"Images")]',
-            by=By.XPATH,
-        ).click()
+        time.sleep(2)
+        self.driver.refresh()
+        self._wait_and_choose_element('//span[contains(text(),"Images")]', by=By.XPATH, timeout=30).click()
 
     def load_pic(self, filename):
-        self._wait_and_choose_element('.r83qMb [class="D7BEKc"] input').send_keys(
-            filename
-        )
+        self._wait_and_choose_element('.r83qMb [class="D7BEKc"] input').send_keys(filename)
 
     def download_pic(self, filename):
         time.sleep(2)
@@ -92,7 +89,6 @@ class PicGoogleTranslateParser:
                 break
             except FileNotFoundError:
                 continue
-
 
     def _wait_and_choose_element(self, selector: str, by: By = By.CSS_SELECTOR, timeout: int = 20) -> WebElement:
         condition = EC.presence_of_element_located((by, selector))
