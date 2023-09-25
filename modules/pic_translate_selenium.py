@@ -69,7 +69,7 @@ class PicGoogleTranslateParser:
             self._wait_and_choose_element('//*[contains(text(),"Accept all")]', by=By.XPATH, timeout=6)
             elems = self.driver.find_elements(By.XPATH, '//*[contains(text(),"Accept all")]')
             elems[-1].click()
-        except TimeoutException:
+        except (TimeoutException, IndexError):
             pass
         self._wait_and_choose_element('//span[contains(text(),"Images")]', by=By.XPATH, timeout=30).click()
 
