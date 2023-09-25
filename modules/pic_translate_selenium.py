@@ -24,7 +24,6 @@ class PicGoogleTranslateParser:
         service = Service(ChromeDriverManager().install())
         browser_options = ChromeOptions()
         service_args = [
-            # '--incognito',
             '--start-maximized',
             '--no-sandbox',
             '--disable-web-security',
@@ -83,7 +82,7 @@ class PicGoogleTranslateParser:
         path = Path(filename)
         old = path.name.split('.')
         # Новое имя файла
-        new_filename = f'{old[0]}-EN.{old[1]}'  # Замените на новое имя файла
+        new_filename = f'{".".join(old[:-1])}-EN.{old[-1]}'  # Замените на новое имя файла
         print(os.path.join(path.parent, new_filename))
         # Переименование файла
         while True:

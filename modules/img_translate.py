@@ -120,9 +120,9 @@ def save_txt(filename, text):
     path = Path(filename)
     file = path.name.split('.')
 
-    full_path = os.path.join(path.parent, file[0] + '-EN.txt')
+    full_path = os.path.join(path.parent, '.'.join(file[:-1]) + '-EN.txt')
     print(full_path)
-    with open(os.path.join(path.parent, file[0] + '-EN.txt'), 'w', encoding='utf-8') as file:
+    with open(os.path.join(path.parent, '.'.join(file[:-1]) + '-EN.txt'), 'w', encoding='utf-8') as file:
         file.write(text)
 
 
@@ -130,7 +130,7 @@ if __name__ == '__main__':
     destination_path = '../Output'
     PROJECT_ID = 'img-translate-397007'
     target_language_code = 'en'
-    folder_path = '../Input.V2'
+    folder_path = '../Input'
     for filename in os.listdir(folder_path):
         file_path = os.path.join(folder_path, filename)
         if os.path.isfile(file_path):
