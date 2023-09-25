@@ -3,6 +3,7 @@ import shutil
 import time
 from pathlib import Path
 
+from selenium.common import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.chrome.service import Service
@@ -33,6 +34,7 @@ class PicGoogleTranslateParser:
             '--profile-directory=Default',
             '--ignore-ssl-errors=true',
             '--disable-dev-shm-usage',
+            '--enable-aggressive-domstorage-flushing',
             # '--headless=new',
         ]
         for arg in service_args:
@@ -44,7 +46,6 @@ class PicGoogleTranslateParser:
             'profile.default_content_setting_values.notifications': 2,
             'profile.default_content_settings.popups': 0
         })
-        browser_options.add_experimental_option("excludeSwitches", ["enable-automation"])
         browser_options.add_experimental_option('excludeSwitches', ['enable-logging'])
         browser_options.add_experimental_option('useAutomationExtension', False)
         browser_options.add_argument('--disable-blink-features=AutomationControlled')
@@ -64,8 +65,12 @@ class PicGoogleTranslateParser:
 
     def open_site(self):
         self.driver.get(self.BASE_URL.format(tl=self.tl))
-        time.sleep(2)
-        self.driver.refresh()
+        try:
+            self._wait_and_choose_element('//*[contains(text(),"Accept all")]', by=By.XPATH, timeout=6)
+            elems = self.driver.find_elements(By.XPATH, '//*[contains(text(),"Accept all")]')
+            elems[-1].click()
+        except TimeoutException:
+            pass
         self._wait_and_choose_element('//span[contains(text(),"Images")]', by=By.XPATH, timeout=30).click()
 
     def load_pic(self, filename):
