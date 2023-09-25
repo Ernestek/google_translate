@@ -24,7 +24,7 @@ class PicGoogleTranslateParser:
         service = Service(ChromeDriverManager().install())
         browser_options = ChromeOptions()
         service_args = [
-            '--incognito',
+            # '--incognito',
             '--start-maximized',
             '--no-sandbox',
             '--disable-web-security',
@@ -36,7 +36,7 @@ class PicGoogleTranslateParser:
             '--ignore-ssl-errors=true',
             '--disable-dev-shm-usage',
             '--enable-aggressive-domstorage-flushing',
-            # '--headless=new',
+            '--headless=new',
         ]
         for arg in service_args:
             browser_options.add_argument(arg)
@@ -50,9 +50,6 @@ class PicGoogleTranslateParser:
         browser_options.add_experimental_option('excludeSwitches', ['enable-logging'])
         browser_options.add_experimental_option('useAutomationExtension', False)
         browser_options.add_argument('--disable-blink-features=AutomationControlled')
-        browser_options.add_argument(
-            "user-agent=Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36")
-
         prefs = {"profile.default_content_settings.popups": 0,
                  "download.default_directory": os.path.join(os.getcwd(), 'temporary'),
                  "directory_upgrade": True}
