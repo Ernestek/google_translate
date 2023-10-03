@@ -16,7 +16,7 @@ from selenium.webdriver.remote.webelement import WebElement
 class PicGoogleTranslateParser:
     if not os.path.exists('temporary'):
         os.makedirs('temporary')
-    shutil.rmtree(os.path.join(os.getcwd(), 'temporary'))
+    # shutil.rmtree(os.path.join(os.getcwd(), 'temporary'))
     tl = 'en'
     BASE_URL = 'https://translate.google.com/?hl=en&tab=TT&sl=auto&tl={tl}&op=images'
 
