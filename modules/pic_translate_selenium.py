@@ -24,7 +24,7 @@ class PicGoogleTranslateParser:
         service = Service(ChromeDriverManager().install())
         browser_options = ChromeOptions()
         service_args = [
-            '--start-maximized',
+            # '--start-maximized',
             '--no-sandbox',
             '--disable-web-security',
             '--disable-blink-features=AutomationControlled',
@@ -34,19 +34,18 @@ class PicGoogleTranslateParser:
             '--profile-directory=Default',
             '--ignore-ssl-errors=true',
             '--disable-dev-shm-usage',
-            '--enable-aggressive-domstorage-flushing',
-            '--headless=new',
+            # '--headless=new',
         ]
         for arg in service_args:
             browser_options.add_argument(arg)
-        browser_options.add_experimental_option(
-            'excludeSwitches', ['enable-automation']
-        )
+        # browser_options.add_experimental_option(
+        #     'excludeSwitches', ['enable-automation']
+        # )
         browser_options.add_experimental_option('prefs', {
             'profile.default_content_setting_values.notifications': 2,
             'profile.default_content_settings.popups': 0
         })
-        browser_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        browser_options.add_experimental_option('excludeSwitches', ['enable-logging', 'enable-automation'])
         browser_options.add_experimental_option('useAutomationExtension', False)
         browser_options.add_argument('--disable-blink-features=AutomationControlled')
         prefs = {"profile.default_content_settings.popups": 0,
@@ -91,6 +90,10 @@ class PicGoogleTranslateParser:
                 break
             except FileNotFoundError:
                 continue
+            except FileExistsError:
+                os.remove(os.path.join(source_path, os.path.basename(old_filename)))
+                print('The file cannot be created because it already exists:')
+                break
 
     def _wait_and_choose_element(self, selector: str, by: By = By.CSS_SELECTOR, timeout: int = 20) -> WebElement:
         condition = EC.presence_of_element_located((by, selector))
